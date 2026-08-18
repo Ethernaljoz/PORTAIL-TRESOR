@@ -1,0 +1,16 @@
+.git
+.gitignore
+.nuxt
+.output
+node_modules
+dist
+.env
+.env.*
+*.log
+.DS_Store
+.idea
+.fleet
+.github
+README.md
+LICENSE
+typecheck_output.txt
