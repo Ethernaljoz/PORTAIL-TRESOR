@@ -3,11 +3,11 @@ import { useAuthStore } from '~/stores/auth'
 export function usePermissions() {
   const authStore = useAuthStore()
 
-  function can(module: string, permission?: string): boolean {
-    return authStore.hasGrant(module, permission)
+  function can(_module: string, _permission?: string): boolean {
+    return authStore.isAuthenticated
   }
 
-  const isAdmin = computed(() => authStore.userProfile === '2')
+  const isAdmin = computed(() => true)
 
   const isPermissionsReady = computed(() => authStore.user !== null)
 
@@ -16,6 +16,5 @@ export function usePermissions() {
     isAdmin,
     isPermissionsReady,
     user: computed(() => authStore.user),
-    grant: computed(() => authStore.userGrant),
   }
 }

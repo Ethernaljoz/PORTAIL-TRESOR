@@ -1,7 +1,14 @@
 import type { User } from '~/types/auth'
 import { defineStore } from 'pinia'
 
-const STORAGE_KEY = 'user_cnhu'
+const STORAGE_KEY = 'tresor_dev_session'
+
+const MOCK_USER: User = {
+  id: 1,
+  name: 'Développeur TRésor',
+  email: 'dev@tresor.bf',
+  token: 'mock-jwt-token-xxxxxxxxxxxx',
+}
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -9,8 +16,6 @@ export const useAuthStore = defineStore('auth', {
   }),
   getters: {
     isAuthenticated: state => !!state.user?.token,
-    userGrant: state => state.user?.grant ?? null,
-    userProfile: state => state.user?.profile ?? null,
   },
   actions: {
     setUser(user: User) {
@@ -38,17 +43,9 @@ export const useAuthStore = defineStore('auth', {
         }
       }
     },
-    hasGrant(module: string, permission?: string): boolean {
-      if (!this.user?.grant)
-        return false
-      if (String(this.user.profile) === '2')
-        return true
-      const grant = this.user.grant as Record<string, any>
-      if (permission) {
-        const mod = grant[module]
-        return mod ? !!mod[permission] : false
-      }
-      return !!grant[module]
+    mockLogin() {
+      this.setUser(MOCK_USER)
+      return MOCK_USER
     },
   },
 })

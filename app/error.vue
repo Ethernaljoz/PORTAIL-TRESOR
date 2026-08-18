@@ -1,12 +1,4 @@
 <script setup>
-const { theme } = useAppSettings()
-
-useHead({
-  bodyAttrs: {
-    class: computed(() => `color-${theme.value?.color || 'default'} theme-${theme.value?.type || 'default'}`),
-  },
-})
-
 const router = useRouter()
 </script>
 
@@ -16,23 +8,18 @@ const router = useRouter()
       <h1 class="text-[7rem] font-bold leading-tight">
         404
       </h1>
-      <span class="font-medium">Oops! Page Not Found!</span>
+      <span class="font-medium">Page introuvable</span>
       <p class="text-center text-muted-foreground">
-        It seems like the page you're looking for <br>
-        does not exist or might have been removed.
+        La page que vous recherchez n'existe pas ou a été déplacée.
       </p>
       <div class="mt-6 flex gap-4">
         <Button variant="outline" @click="router.back()">
-          Go Back
+          Retour
         </Button>
-        <Button @click="router.push('/')">
-          Back to Home
+        <Button @click="router.push('/portal')">
+          Accueil
         </Button>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

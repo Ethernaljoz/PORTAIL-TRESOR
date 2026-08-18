@@ -6,7 +6,6 @@ import 'vue-sonner/style.css'
 const colorMode = useColorMode()
 colorMode.preference = 'light'
 const color = '#ffffff'
-const { theme } = useAppSettings()
 
 useHead({
   meta: [
@@ -20,13 +19,10 @@ useHead({
   htmlAttrs: {
     lang: 'fr',
   },
-  bodyAttrs: {
-    class: computed(() => `color-${theme.value?.color || 'default'} theme-${theme.value?.type || 'default'}`),
-  },
 })
 
-const title = 'CNHU - Gestion des consultations et paiements'
-const description = 'Interface de gestion des consultations et paiements du Centre National Hospitalier Universitaire.'
+const title = 'TRésor API - Plateforme Développeur'
+const description = 'API RESTful pour intégrer les services financiers du Trésor. Consultez les soldes, initiez des transferts et suivez vos opérations.'
 
 useSeoMeta({
   title,
@@ -39,7 +35,7 @@ useSeoMeta({
 const router = useRouter()
 
 defineShortcuts({
-  'G-H': () => router.push('/'),
+  'G-H': () => router.push('/portal'),
 })
 
 const textDirection = useTextDirection({ initialValue: 'ltr' })

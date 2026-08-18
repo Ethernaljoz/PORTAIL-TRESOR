@@ -16,7 +16,6 @@ export default defineNuxtConfig({
     ],
     optimizeDeps: {
       include: [
-        '@tanstack/vue-table',
         '@vee-validate/zod',
         'vee-validate',
         'zod',
@@ -41,19 +40,12 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
   ],
   plugins: [
-    '~/plugins/vue-query.ts', // client only
+    '~/plugins/vue-query.ts',
     '~/plugins/axios.ts',
   ],
 
   shadcn: {
-    /**
-     * Prefix for all the imported component
-     */
     prefix: '',
-    /**
-     * Directory that the component lives in.
-     * @default "~/components/ui"
-     */
     componentDir: '~/components/ui',
   },
 
@@ -75,11 +67,7 @@ export default defineNuxtConfig({
     },
   },
 
-  routeRules: {
-    '/components': { redirect: '/components/accordion' },
-    '/settings': { redirect: '/settings/profile' },
-    '/profile': { redirect: '/settings/profile' },
-  },
+  routeRules: {},
 
   imports: {
     dirs: [

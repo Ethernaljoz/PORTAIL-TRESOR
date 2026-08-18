@@ -156,15 +156,10 @@
     @apply border-border outline-ring/50;
   }
 
-  html {
-    @apply overflow-hidden;
-  }
-
   body {
     font-family: var(--font-sans);
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
-    @apply overflow-hidden;
   }
 
   @supports (font: -apple-system-body) and (-webkit-appearance: none) {
