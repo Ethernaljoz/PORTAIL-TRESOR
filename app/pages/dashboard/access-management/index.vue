@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ requiresAuth: true })
 
-const { roles, permissions } = useMockData()
+const { roles, permissions } = useUsersData()
 
 const selectedRole = ref<string | null>(null)
 

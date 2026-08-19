@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ requiresAuth: true })
 
-const { notifications } = useMockData()
+const { notifications } = useNotificationsData()
 
 const typeFilter = ref('')
 const showUnreadOnly = ref(false)

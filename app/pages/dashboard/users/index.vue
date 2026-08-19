@@ -6,7 +6,7 @@ import type { Utilisateur } from '~/types/tresor'
 
 definePageMeta({ requiresAuth: true })
 
-const { utilisateurs } = useMockData()
+const { utilisateurs } = useUsersData()
 
 const roleFilter = ref('')
 const statutFilter = ref('')

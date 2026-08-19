@@ -6,7 +6,7 @@ import type { Transaction } from '~/types/tresor'
 
 definePageMeta({ requiresAuth: true })
 
-const { transactions } = useMockData()
+const { transactions } = useTransactionsData()
 
 const typeFilter = ref('')
 const statutFilter = ref('')

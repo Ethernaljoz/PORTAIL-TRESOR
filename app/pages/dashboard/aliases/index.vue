@@ -6,7 +6,7 @@ import type { Alias } from '~/types/tresor'
 
 definePageMeta({ requiresAuth: true })
 
-const { alias } = useMockData()
+const { alias } = useServicesData()
 
 const institutionFilter = ref('')
 const searchRef = ref('')

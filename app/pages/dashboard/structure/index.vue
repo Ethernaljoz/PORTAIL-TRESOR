@@ -6,7 +6,7 @@ import type { Transfert } from '~/types/tresor'
 
 definePageMeta({ requiresAuth: true })
 
-const { structure, comptes, transferts } = useMockData()
+const { structure, comptes, transferts } = useStructureData()
 
 function statutColor(statut: string): string {
   const map: Record<string, string> = {

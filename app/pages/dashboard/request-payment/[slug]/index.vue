@@ -5,7 +5,7 @@ import type { DemandePaiement } from '~/types/tresor'
 definePageMeta({ requiresAuth: true })
 
 const route = useRoute()
-const { demandesPaiement } = useMockData()
+const { demandesPaiement } = useTransactionsData()
 
 const reference = route.params.slug as string
 

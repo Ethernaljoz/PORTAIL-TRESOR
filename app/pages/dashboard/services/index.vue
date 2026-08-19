@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ requiresAuth: true })
 
-const { services } = useMockData()
+const { services } = useServicesData()
 
 function statutColor(statut: string): string {
   const map: Record<string, string> = {

@@ -6,7 +6,7 @@ import type { PaiementRecu } from '~/types/tresor'
 
 definePageMeta({ requiresAuth: true })
 
-const { paiementsRecus, institutions } = useMockData()
+const { paiementsRecus } = useTransactionsData()
 
 const statutFilter = ref('')
 const institutionFilter = ref('')
