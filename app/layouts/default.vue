@@ -19,7 +19,7 @@ function getPageTitle(): string {
     <SidebarInset>
       <LayoutHeader :title="getPageTitle()" />
       <div class="flex flex-col flex-1 min-w-0 overflow-y-auto">
-        <div class="px-6 lg:px-10 py-8 grow min-w-0">
+        <div class="px-6 py-8 grow min-w-0">
           <slot />
         </div>
       </div>
