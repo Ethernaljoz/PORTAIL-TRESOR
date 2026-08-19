@@ -1,7 +1,16 @@
 <script setup lang="ts">
+import type { NavGroup, NavLink, NavSectionTitle } from '~/types/nav'
 import { LogOut } from 'lucide-vue-next'
-import { backofficeMenu } from '~/constants/menus'
+import logoTresor from '~/assets/images/logo_tresor.png'
 import { useSidebar } from '~/components/ui/sidebar'
+import { backofficeMenu } from '~/constants/menus'
+
+function resolveNavItemComponent(item: NavLink | NavGroup | NavSectionTitle): any {
+  if ('children' in item)
+    return resolveComponent('LayoutSidebarNavGroup')
+
+  return resolveComponent('LayoutSidebarNavLink')
+}
 
 const route = useRoute()
 const { logout } = useAuth()
@@ -11,20 +20,20 @@ const { setOpenMobile } = useSidebar()
 <template>
   <Sidebar class="border-r border-border bg-sidebar shrink-0">
     <div class="flex items-center gap-3 px-6 py-5">
-      <div class="size-9 rounded-lg bg-primary flex items-center justify-center">
-        <span class="text-primary-foreground font-bold text-sm">T</span>
+      <div class="size-16 rounded-sm flex items-center justify-center">
+        <img :src="logoTresor" alt="Logo" class="w-full h-full object-cover">
       </div>
       <div>
         <div class="text-[15px] font-semibold text-foreground leading-tight">
-          TRésor API
+          Portail Trésor
         </div>
         <div class="text-[11px] text-muted-foreground">
-          Espace développeur
+          Espace Institutionnel
         </div>
       </div>
     </div>
 
-    <div class="flex-1 overflow-y-auto px-3 py-5 space-y-6">
+    <div class="flex-1 overflow-y-auto px-3  space-y-6">
       <ClientOnly>
         <div v-for="(group, i) in backofficeMenu" :key="i">
           <div class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-3 mb-2">
@@ -35,7 +44,7 @@ const { setOpenMobile } = useSidebar()
               v-for="item in group.items"
               :key="item.link"
               :to="item.link"
-              class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-medium transition-all"
+              class="group flex items-center gap-3 rounded-sm px-3 py-2.5 text-[13.5px] font-medium transition-all"
               :class="route.path === item.link
                 ? 'bg-primary text-primary-foreground shadow-(--shadow-soft)'
                 : 'text-sidebar-foreground hover:bg-accent hover:text-accent-foreground'"
@@ -55,6 +64,18 @@ const { setOpenMobile } = useSidebar()
           </div>
         </template>
       </ClientOnly>
+
+      <!-- <SidebarContent>
+        <SidebarGroup v-for="(nav, indexGroup) in backofficeMenu" :key="indexGroup" :size="'lg'">
+          <SidebarGroupLabel v-if="nav.heading">
+            {{ nav.heading }}
+          </SidebarGroupLabel>
+          <component :is="resolveNavItemComponent(item)" v-for="(item, index) in nav.items" :key="index" :item="item" />
+        </SidebarGroup>
+        <SidebarGroup class="mt-auto">
+          <component :is="resolveNavItemComponent(item)" v-for="(item, index) in navMenuBottom" :key="index" :item="item" size="sm" />
+        </SidebarGroup>
+      </SidebarContent> -->
     </div>
 
     <div class="px-3 py-3 border-t border-border">

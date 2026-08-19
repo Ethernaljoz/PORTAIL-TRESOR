@@ -9,7 +9,7 @@ const changes = [
     date: '2026-08-01',
     type: 'minor',
     changes: [
-      'Lancement de la plateforme TRésor API',
+      'Lancement de la plateforme Portail Trésor',
       'Endpoints : Comptes, Transferts, Opérations, Webhooks, Auth',
       'SDKs JavaScript et Python',
       'Mode Sandbox disponible',
@@ -33,7 +33,7 @@ const changes = [
     <div>
       <h1 class="text-3xl font-bold text-foreground">Changelog</h1>
       <p class="mt-4 text-muted-foreground leading-relaxed">
-        Historique des versions et changements de TRésor API.
+        Historique des versions et changements de Portail Trésor.
       </p>
     </div>
 

@@ -13,10 +13,10 @@ const route = useRoute()
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div class="space-y-3">
             <div class="flex items-center gap-2">
-              <div class="size-8 rounded-lg bg-primary flex items-center justify-center">
-                <span class="text-primary-foreground font-bold text-sm">T</span>
+              <div class="size-8 rounded-sm bg-primary flex items-center justify-center">
+                <span class="text-primary-foreground font-bold text-sm">PT</span>
               </div>
-              <span class="font-semibold text-foreground">TRésor API</span>
+              <span class="font-semibold text-foreground">Portail Trésor</span>
             </div>
             <p class="text-sm text-muted-foreground leading-relaxed">
               Plateforme développeur pour intégrer les services financiers du Trésor.
@@ -26,7 +26,6 @@ const route = useRoute()
             <h4 class="text-sm font-semibold text-foreground">Produit</h4>
             <div class="space-y-2 text-sm text-muted-foreground">
               <NuxtLink to="/docs" class="block hover:text-foreground transition-colors">Documentation</NuxtLink>
-              <NuxtLink to="/portal#pricing" class="block hover:text-foreground transition-colors">Tarifs</NuxtLink>
               <NuxtLink to="/dashboard" class="block hover:text-foreground transition-colors">Espace développeur</NuxtLink>
             </div>
           </div>
@@ -47,7 +46,7 @@ const route = useRoute()
           </div>
         </div>
         <div class="mt-10 pt-6 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-          <span>&copy; 2026 TRésor API. Tous droits réservés.</span>
+          <span>&copy; 2026 Portail Trésor. Tous droits réservés.</span>
           <span>Version 1.0.0</span>
         </div>
       </div>

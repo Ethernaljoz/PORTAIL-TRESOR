@@ -10,9 +10,9 @@ definePageMeta({
       <div class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs text-primary mb-4">
         API v1.0
       </div>
-      <h1 class="text-3xl font-bold text-foreground">Introduction à TRésor API</h1>
+      <h1 class="text-3xl font-bold text-foreground">Introduction à Portail Trésor</h1>
       <p class="mt-4 text-muted-foreground leading-relaxed">
-        Bienvenue dans la documentation de TRésor API. Cette API RESTful vous permet d'intégrer les services financiers du Trésor dans vos applications.
+        Bienvenue dans la documentation de Portail Trésor. Cette API RESTful vous permet d'intégrer les services financiers du Trésor dans vos applications.
       </p>
     </div>
 
@@ -20,7 +20,7 @@ definePageMeta({
       <CardContent class="p-6 space-y-4">
         <h2 class="text-lg font-semibold text-foreground">Vue d'ensemble</h2>
         <p class="text-sm text-muted-foreground leading-relaxed">
-          TRésor API expose un ensemble d'endpoints RESTful pour la gestion de comptes, le transfert de fonds, et le suivi des opérations financières. Toutes les requêtes et réponses sont au format JSON.
+          Portail Trésor expose un ensemble d'endpoints RESTful pour la gestion de comptes, le transfert de fonds, et le suivi des opérations financières. Toutes les requêtes et réponses sont au format JSON.
         </p>
         <div class="bg-muted rounded-lg p-4">
           <div class="text-[11px] font-semibold text-muted-foreground mb-2">URL de base (Sandbox)</div>

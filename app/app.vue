@@ -21,7 +21,7 @@ useHead({
   },
 })
 
-const title = 'TRésor API - Plateforme Développeur'
+const title = 'Portail Trésor - Plateforme Développeur'
 const description = 'API RESTful pour intégrer les services financiers du Trésor. Consultez les soldes, initiez des transferts et suivez vos opérations.'
 
 useSeoMeta({

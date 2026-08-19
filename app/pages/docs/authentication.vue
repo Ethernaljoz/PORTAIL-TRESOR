@@ -9,7 +9,7 @@ definePageMeta({
     <div>
       <h1 class="text-3xl font-bold text-foreground">Authentification</h1>
       <p class="mt-4 text-muted-foreground leading-relaxed">
-        TRésor API utilise l'authentification OAuth 2.0 avec le flux Client Credentials. Vous devez fournir vos identifiants pour obtenir un token d'accès.
+        Portail Trésor utilise l'authentification OAuth 2.0 avec le flux Client Credentials. Vous devez fournir vos identifiants pour obtenir un token d'accès.
       </p>
     </div>
 

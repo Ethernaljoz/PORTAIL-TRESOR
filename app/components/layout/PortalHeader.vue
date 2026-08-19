@@ -9,10 +9,10 @@ const { isAuthenticated } = useAuth()
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
       <div class="flex items-center gap-8">
         <NuxtLink to="/portal" class="flex items-center gap-2.5">
-          <div class="size-9 rounded-lg bg-primary flex items-center justify-center">
-            <span class="text-primary-foreground font-bold text-base">T</span>
+          <div class="size-9 rounded-sm bg-primary flex items-center justify-center">
+            <span class="text-primary-foreground font-bold text-base">PT</span>
           </div>
-          <span class="font-semibold text-foreground text-base">TRésor API</span>
+          <span class="font-semibold text-foreground text-base">Portail Trésor</span>
         </NuxtLink>
         <nav class="hidden md:flex items-center gap-1">
           <NuxtLink
@@ -30,9 +30,10 @@ const { isAuthenticated } = useAuth()
           <template v-if="isAuthenticated">
             <NuxtLink
               to="/dashboard"
-              class="h-9 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all"
             >
-              Mon tableau de bord
+              <div class="flex items-center justify-center h-9 px-4 rounded-lg bg-primary text-center text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all">
+                Mon tableau de bord
+              </div>
             </NuxtLink>
           </template>
           <template #fallback>

@@ -9,7 +9,7 @@ function getPageTitle(): string {
     '/dashboard/logs': 'Journal d\'activité',
     '/dashboard/settings': 'Paramètres',
   }
-  return titles[route.path] || 'TRésor API'
+  return titles[route.path] || 'Portail Trésor'
 }
 </script>
 

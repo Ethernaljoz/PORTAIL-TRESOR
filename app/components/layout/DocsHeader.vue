@@ -15,10 +15,10 @@ const emit = defineEmits<{
           <Icon name="i-lucide-menu" class="size-4" />
         </button>
         <NuxtLink to="/portal" class="flex items-center gap-2.5">
-          <div class="size-8 rounded-lg bg-primary flex items-center justify-center">
-            <span class="text-primary-foreground font-bold text-sm">T</span>
+          <div class="size-8 rounded-sm bg-primary flex items-center justify-center">
+            <span class="text-primary-foreground font-bold text-sm">PT</span>
           </div>
-          <span class="font-semibold text-foreground text-sm">TRésor API</span>
+          <span class="font-semibold text-foreground text-sm">Portail Trésor</span>
         </NuxtLink>
         <div class="hidden md:flex items-center gap-1 ml-4 pl-4 border-l border-border">
           <NuxtLink
