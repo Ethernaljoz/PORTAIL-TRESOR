@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { h, ref, computed } from 'vue'
 import type { ColumnDef } from '@tanstack/vue-table'
-import type { DemandePaiement } from '~/types/tresor'
 import { getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useVueTable } from '@tanstack/vue-table'
-import { Eye, Pencil, Trash2 } from 'lucide-vue-next'
-import { computed, h, ref } from 'vue'
+import { Pencil, Trash2, Eye } from 'lucide-vue-next'
+import type { DemandePaiement } from '~/types/tresor'
 
 definePageMeta({ requiresAuth: true })
 
@@ -12,9 +12,20 @@ const { demandesPaiement, institutions } = useMockData()
 const searchRef = ref('')
 const selectedInstitution = ref('')
 const selectedStatut = ref('')
-const dateDebut = ref('')
-const dateFin = ref('')
 const isLoading = ref(false)
+
+const institutionOptions = computed(() => {
+  const names = [...new Set(demandesPaiement.value.map(d => d.institution))]
+  return [{ label: 'Toutes', value: '' }, ...names.map(n => ({ label: n, value: n }))]
+})
+
+const statutOptions = [
+  { label: 'Tous', value: '' },
+  { label: 'En attente', value: 'En attente' },
+  { label: 'Reussi', value: 'Réussi' },
+  { label: 'Expire', value: 'Expiré' },
+  { label: 'Rejete', value: 'Rejeté' },
+]
 
 const filteredData = computed(() => {
   let data = [...demandesPaiement.value]
@@ -31,7 +42,7 @@ const filteredData = computed(() => {
   return data
 })
 
-function statutColor(statut: string) {
+const statutColor = (statut: string) => {
   const map: Record<string, string> = {
     'Réussi': 'text-emerald-600 bg-emerald-50 ring-emerald-200',
     'En attente': 'text-amber-600 bg-amber-50 ring-amber-200',
@@ -42,13 +53,13 @@ function statutColor(statut: string) {
 }
 
 function formatMontant(val: number): string {
-  return `${val.toLocaleString('fr-FR')} XOF`
+  return val.toLocaleString('fr-FR') + ' XOF'
 }
 
 const columns: ColumnDef<DemandePaiement>[] = [
   {
     accessorKey: 'reference',
-    header: 'Référence',
+    header: 'Reference',
     cell: ({ row }) => h('span', { class: 'text-sm font-mono font-medium' }, row.getValue('reference')),
   },
   {
@@ -73,7 +84,7 @@ const columns: ColumnDef<DemandePaiement>[] = [
   },
   {
     accessorKey: 'echeance',
-    header: 'Échéance',
+    header: 'Echeance',
     cell: ({ row }) => h('span', { class: 'text-sm text-muted-foreground' }, row.getValue('echeance')),
   },
   {
@@ -100,18 +111,14 @@ const columns: ColumnDef<DemandePaiement>[] = [
           title: 'Voir',
           onClick: () => navigateTo(`/dashboard/request-payment/${p.reference}`),
         }, h(Eye, { class: 'size-[14px]' })),
-        p.statut === 'En attente'
-          ? h('button', {
-              class: 'size-8 rounded-lg border border-border bg-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition',
-              title: 'Modifier',
-            }, h(Pencil, { class: 'size-[14px]' }))
-          : null,
-        p.statut === 'En attente'
-          ? h('button', {
-              class: 'size-8 rounded-lg border border-border bg-card flex items-center justify-center text-destructive/70 hover:text-destructive hover:border-destructive/30 transition',
-              title: 'Supprimer',
-            }, h(Trash2, { class: 'size-[14px]' }))
-          : null,
+        p.statut === 'En attente' ? h('button', {
+          class: 'size-8 rounded-lg border border-border bg-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition',
+          title: 'Modifier',
+        }, h(Pencil, { class: 'size-[14px]' })) : null,
+        p.statut === 'En attente' ? h('button', {
+          class: 'size-8 rounded-lg border border-border bg-card flex items-center justify-center text-destructive/70 hover:text-destructive hover:border-destructive/30 transition',
+          title: 'Supprimer',
+        }, h(Trash2, { class: 'size-[14px]' })) : null,
       ])
     },
   },
@@ -130,8 +137,6 @@ function resetFilters() {
   searchRef.value = ''
   selectedInstitution.value = ''
   selectedStatut.value = ''
-  dateDebut.value = ''
-  dateFin.value = ''
 }
 </script>
 
@@ -139,12 +144,8 @@ function resetFilters() {
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-xl font-semibold">
-          Demandes de paiement
-        </h1>
-        <p class="text-sm text-muted-foreground mt-1">
-          Gérez les demandes de paiement des usagers
-        </p>
+        <h1 class="text-xl font-semibold">Demandes de paiement</h1>
+        <p class="text-sm text-muted-foreground mt-1">Gelez les demandes de paiement des usagers</p>
       </div>
       <button class="h-9 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all inline-flex items-center gap-2">
         <Icon name="i-lucide-plus" class="size-4" />
@@ -157,53 +158,16 @@ function resetFilters() {
         <div class="flex flex-wrap items-end gap-4">
           <div class="space-y-1.5">
             <label class="text-[12px] font-medium text-muted-foreground">Recherche</label>
-            <input v-model="searchRef" type="text" placeholder="Référence ou usager..." class="h-9 rounded-lg border border-border bg-background px-3 text-sm min-w-[200px]">
+            <input v-model="searchRef" type="text" placeholder="Reference ou usager..." class="h-9 rounded-lg border border-border bg-background px-3 text-sm min-w-[200px]">
           </div>
-          <div class="space-y-1.5">
-            <label class="text-[12px] font-medium text-muted-foreground">Institution</label>
-            <select v-model="selectedInstitution" class="h-9 rounded-lg border border-border bg-background px-3 text-sm min-w-[180px]">
-              <option value="">
-                Toutes
-              </option>
-              <option v-for="inst in institutions" :key="inst.id" :value="inst.nom">
-                {{ inst.nom }}
-              </option>
-            </select>
-          </div>
-          <div class="space-y-1.5">
-            <label class="text-[12px] font-medium text-muted-foreground">Statut</label>
-            <select v-model="selectedStatut" class="h-9 rounded-lg border border-border bg-background px-3 text-sm min-w-[140px]">
-              <option value="">
-                Tous
-              </option>
-              <option value="En attente">
-                En attente
-              </option>
-              <option value="Réussi">
-                Réussi
-              </option>
-              <option value="Expiré">
-                Expiré
-              </option>
-              <option value="Rejeté">
-                Rejeté
-              </option>
-            </select>
-          </div>
-          <div class="space-y-1.5">
-            <label class="text-[12px] font-medium text-muted-foreground">Date début</label>
-            <input v-model="dateDebut" type="date" class="h-9 rounded-lg border border-border bg-background px-3 text-sm">
-          </div>
-          <div class="space-y-1.5">
-            <label class="text-[12px] font-medium text-muted-foreground">Date fin</label>
-            <input v-model="dateFin" type="date" class="h-9 rounded-lg border border-border bg-background px-3 text-sm">
-          </div>
-          <Button variant="ghost" size="sm" class="h-9" @click="resetFilters">
+          <AppSelectInput v-model="selectedInstitution" :options="institutionOptions" label="Institution" trigger-class="min-w-[200px]" />
+          <AppSelectInput v-model="selectedStatut" :options="statutOptions" label="Statut" trigger-class="min-w-[140px]" />
+          <Button variant="ghost" size="sm" class="h-10" @click="resetFilters">
             <Icon name="i-lucide-rotate-ccw" class="size-4 mr-1" />
-            Réinitialiser
+            Reinitialiser
           </Button>
           <p class="w-full text-[12px] text-muted-foreground">
-            {{ filteredData.length }} résultat(s)
+            {{ filteredData.length }} resultat(s)
           </p>
         </div>
       </CardContent>

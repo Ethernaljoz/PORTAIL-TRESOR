@@ -1,12 +1,22 @@
 <script setup lang="ts">
+import { h, ref, computed } from 'vue'
+import type { ColumnDef } from '@tanstack/vue-table'
+import { getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useVueTable } from '@tanstack/vue-table'
+import type { Alias } from '~/types/tresor'
+
 definePageMeta({ requiresAuth: true })
 
-const { alias, institutions } = useMockData()
+const { alias } = useMockData()
 
 const institutionFilter = ref('')
 const searchRef = ref('')
 
-const filteredAlias = computed(() => {
+const institutionOptions = computed(() => {
+  const names = [...new Set(alias.value.map(a => a.institution))]
+  return [{ label: 'Toutes', value: '' }, ...names.map(n => ({ label: n, value: n }))]
+})
+
+const filteredData = computed(() => {
   return alias.value.filter(a => {
     if (institutionFilter.value && a.institution !== institutionFilter.value) return false
     if (searchRef.value) {
@@ -16,8 +26,6 @@ const filteredAlias = computed(() => {
     return true
   })
 })
-
-const uniqueInstitutions = computed(() => [...new Set(alias.value.map(a => a.institution))])
 
 function typeColor(type: string): string {
   const map: Record<string, string> = {
@@ -34,6 +42,69 @@ function statutColor(statut: string): string {
   }
   return map[statut] || 'text-muted-foreground bg-muted'
 }
+
+const columns: ColumnDef<Alias>[] = [
+  {
+    accessorKey: 'nom',
+    header: 'Nom',
+    cell: ({ row }) => h('code', { class: 'text-xs font-mono font-medium bg-muted px-2 py-0.5 rounded' }, row.getValue('nom')),
+  },
+  {
+    accessorKey: 'type',
+    header: 'Type',
+    cell: ({ row }) => {
+      const type = row.getValue('type') as string
+      return h('span', { class: ['inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold', typeColor(type)] }, type)
+    },
+  },
+  {
+    accessorKey: 'institution',
+    header: 'Institution',
+    cell: ({ row }) => h('span', { class: 'text-xs text-muted-foreground max-w-[180px] truncate block' }, row.getValue('institution')),
+  },
+  {
+    accessorKey: 'service',
+    header: 'Service',
+    cell: ({ row }) => h('span', { class: 'text-xs' }, row.getValue('service')),
+  },
+  {
+    accessorKey: 'compte',
+    header: 'Compte',
+    cell: ({ row }) => h('span', { class: 'text-xs font-mono text-muted-foreground' }, row.getValue('compte')),
+  },
+  {
+    accessorKey: 'nbTransactions',
+    header: 'Transactions',
+    cell: ({ row }) => h('span', { class: 'text-xs font-semibold' }, (row.getValue('nbTransactions') as number).toLocaleString('fr-FR')),
+  },
+  {
+    accessorKey: 'statut',
+    header: 'Statut',
+    cell: ({ row }) => {
+      const statut = row.getValue('statut') as string
+      return h('span', { class: ['inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 ring-inset', statutColor(statut)] }, statut)
+    },
+  },
+  {
+    accessorKey: 'creeLe',
+    header: 'Cree le',
+    cell: ({ row }) => h('span', { class: 'text-xs text-muted-foreground whitespace-nowrap' }, row.getValue('creeLe')),
+  },
+]
+
+const table = useVueTable({
+  get data() { return filteredData.value },
+  columns,
+  getCoreRowModel: getCoreRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
+  getPaginationRowModel: getPaginationRowModel(),
+  initialState: { pagination: { pageSize: 10 } },
+})
+
+function resetFilters() {
+  institutionFilter.value = ''
+  searchRef.value = ''
+}
 </script>
 
 <template>
@@ -49,7 +120,6 @@ function statutColor(statut: string): string {
       </button>
     </div>
 
-    <!-- Filtres -->
     <Card>
       <CardContent class="p-4">
         <div class="flex flex-wrap items-end gap-4">
@@ -57,62 +127,19 @@ function statutColor(statut: string): string {
             <label class="text-[12px] font-medium text-muted-foreground">Recherche</label>
             <input v-model="searchRef" type="text" placeholder="Nom ou service..." class="h-9 rounded-lg border border-border bg-background px-3 text-sm min-w-[200px]">
           </div>
-          <div class="space-y-1.5">
-            <label class="text-[12px] font-medium text-muted-foreground">Institution</label>
-            <select v-model="institutionFilter" class="h-9 rounded-lg border border-border bg-background px-3 text-sm min-w-[200px]">
-              <option value="">Toutes</option>
-              <option v-for="inst in uniqueInstitutions" :key="inst" :value="inst">{{ inst }}</option>
-            </select>
-          </div>
-          <div class="ml-auto text-[13px] text-muted-foreground">
-            {{ filteredAlias.length }} alias
-          </div>
+          <AppSelectInput v-model="institutionFilter" :options="institutionOptions" label="Institution" trigger-class="min-w-[200px]" />
+          <Button variant="ghost" size="sm" class="h-10" @click="resetFilters">
+            <Icon name="i-lucide-rotate-ccw" class="size-4 mr-1" />
+            Reinitialiser
+          </Button>
+          <p class="ml-auto text-[13px] text-muted-foreground">
+            {{ filteredData.length }} alias
+          </p>
         </div>
       </CardContent>
     </Card>
 
-    <!-- Table -->
-    <Card>
-      <CardContent class="p-0">
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-border">
-                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Nom</th>
-                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Type</th>
-                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Institution</th>
-                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Service</th>
-                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Compte</th>
-                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Transactions</th>
-                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Statut</th>
-                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Cree le</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-border">
-              <tr v-for="a in filteredAlias" :key="a.id" class="hover:bg-muted/50">
-                <td class="py-3 px-4">
-                  <code class="text-xs font-mono font-medium bg-muted px-2 py-0.5 rounded">{{ a.nom }}</code>
-                </td>
-                <td class="py-3 px-4">
-                  <span :class="['inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold', typeColor(a.type)]">
-                    {{ a.type }}
-                  </span>
-                </td>
-                <td class="py-3 px-4 text-xs text-muted-foreground max-w-[180px] truncate">{{ a.institution }}</td>
-                <td class="py-3 px-4 text-xs">{{ a.service }}</td>
-                <td class="py-3 px-4 text-xs font-mono text-muted-foreground">{{ a.compte }}</td>
-                <td class="py-3 px-4 text-xs font-semibold">{{ a.nbTransactions.toLocaleString('fr-FR') }}</td>
-                <td class="py-3 px-4">
-                  <span :class="['inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 ring-inset', statutColor(a.statut)]">
-                    {{ a.statut }}
-                  </span>
-                </td>
-                <td class="py-3 px-4 text-xs text-muted-foreground whitespace-nowrap">{{ a.creeLe }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </CardContent>
-    </Card>
+    <AppDataTable :table="table" />
+    <AppPagination :table="table" :total="filteredData.length" />
   </div>
 </template>

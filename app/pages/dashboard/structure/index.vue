@@ -1,21 +1,17 @@
 <script setup lang="ts">
+import { h, computed } from 'vue'
+import type { ColumnDef } from '@tanstack/vue-table'
+import { getCoreRowModel, getFilteredRowModel, getPaginationRowModel, useVueTable } from '@tanstack/vue-table'
+import type { Transfert } from '~/types/tresor'
+
 definePageMeta({ requiresAuth: true })
 
-const { structure, comptes, reconciliation, transferts } = useMockData()
+const { structure, comptes, transferts } = useMockData()
 
 function statutColor(statut: string): string {
   const map: Record<string, string> = {
     'Actif': 'text-emerald-600 bg-emerald-50 ring-emerald-200',
     'En attente': 'text-amber-600 bg-amber-50 ring-amber-200',
-  }
-  return map[statut] || 'text-muted-foreground bg-muted'
-}
-
-function transfertStatutColor(statut: string): string {
-  const map: Record<string, string> = {
-    'Execute': 'text-emerald-600 bg-emerald-50 ring-emerald-200',
-    'En cours': 'text-amber-600 bg-amber-50 ring-amber-200',
-    'Planifie': 'text-blue-600 bg-blue-50 ring-blue-200',
   }
   return map[statut] || 'text-muted-foreground bg-muted'
 }
@@ -26,6 +22,61 @@ function formatMontant(val: number): string {
 
 const rootStructure = computed(() => structure.value.filter(s => s.parent === null))
 const childStructure = computed(() => structure.value.filter(s => s.parent !== null))
+
+const columns: ColumnDef<Transfert>[] = [
+  {
+    accessorKey: 'id',
+    header: 'ID',
+    cell: ({ row }) => h('span', { class: 'text-xs font-mono text-muted-foreground' }, row.getValue('id')),
+  },
+  {
+    accessorKey: 'source',
+    header: 'Source',
+    cell: ({ row }) => h('span', { class: 'text-xs font-medium' }, row.getValue('source')),
+  },
+  {
+    accessorKey: 'destination',
+    header: 'Destination',
+    cell: ({ row }) => h('span', { class: 'text-xs text-muted-foreground' }, row.getValue('destination')),
+  },
+  {
+    accessorKey: 'montant',
+    header: 'Montant',
+    cell: ({ row }) => h('span', { class: 'text-xs font-semibold font-mono' }, formatMontant(row.getValue('montant') as number)),
+  },
+  {
+    accessorKey: 'motif',
+    header: 'Motif',
+    cell: ({ row }) => h('span', { class: 'text-xs text-muted-foreground max-w-[200px] truncate block' }, row.getValue('motif')),
+  },
+  {
+    accessorKey: 'statut',
+    header: 'Statut',
+    cell: ({ row }) => {
+      const statut = row.getValue('statut') as string
+      const map: Record<string, string> = {
+        'Exécuté': 'text-emerald-600 bg-emerald-50 ring-emerald-200',
+        'En cours': 'text-amber-600 bg-amber-50 ring-amber-200',
+        'Planifié': 'text-blue-600 bg-blue-50 ring-blue-200',
+      }
+      return h('span', { class: ['inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 ring-inset', map[statut] || 'text-muted-foreground bg-muted'] }, statut)
+    },
+  },
+  {
+    accessorKey: 'dateInitiation',
+    header: 'Date',
+    cell: ({ row }) => h('span', { class: 'text-xs text-muted-foreground whitespace-nowrap' }, row.getValue('dateInitiation')),
+  },
+]
+
+const table = useVueTable({
+  get data() { return transferts.value },
+  columns,
+  getCoreRowModel: getCoreRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
+  getPaginationRowModel: getPaginationRowModel(),
+  initialState: { pagination: { pageSize: 10 } },
+})
 </script>
 
 <template>
@@ -120,40 +171,8 @@ const childStructure = computed(() => structure.value.filter(s => s.parent !== n
     <!-- Transferts recents -->
     <div>
       <h2 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Transferts recents</h2>
-      <Card>
-        <CardContent class="p-0">
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-              <thead>
-                <tr class="border-b border-border">
-                  <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">ID</th>
-                  <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Source</th>
-                  <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Destination</th>
-                  <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Montant</th>
-                  <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Motif</th>
-                  <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Statut</th>
-                  <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Date</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-border">
-                <tr v-for="t in transferts" :key="t.id" class="hover:bg-muted/50">
-                  <td class="py-3 px-4 text-xs font-mono text-muted-foreground">{{ t.id }}</td>
-                  <td class="py-3 px-4 text-xs font-medium">{{ t.source }}</td>
-                  <td class="py-3 px-4 text-xs text-muted-foreground">{{ t.destination }}</td>
-                  <td class="py-3 px-4 text-xs font-semibold font-mono">{{ formatMontant(t.montant) }}</td>
-                  <td class="py-3 px-4 text-xs text-muted-foreground max-w-[200px] truncate">{{ t.motif }}</td>
-                  <td class="py-3 px-4">
-                    <span :class="['inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 ring-inset', transfertStatutColor(t.statut)]">
-                      {{ t.statut }}
-                    </span>
-                  </td>
-                  <td class="py-3 px-4 text-xs text-muted-foreground whitespace-nowrap">{{ t.dateInitiation }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+      <AppDataTable :table="table" />
+      <AppPagination :table="table" :total="transferts.length" />
     </div>
   </div>
 </template>

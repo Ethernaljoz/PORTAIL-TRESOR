@@ -6,6 +6,14 @@ const { notifications } = useMockData()
 const typeFilter = ref('')
 const showUnreadOnly = ref(false)
 
+const typeOptions = [
+  { label: 'Tous', value: '' },
+  { label: 'Info', value: 'info' },
+  { label: 'Succes', value: 'success' },
+  { label: 'Alerte', value: 'warning' },
+  { label: 'Erreur', value: 'error' },
+]
+
 const filteredNotifications = computed(() => {
   return notifications.value.filter(n => {
     if (typeFilter.value && n.type !== typeFilter.value) return false
@@ -49,7 +57,6 @@ const unreadCount = computed(() => notifications.value.filter(n => !n.lue).lengt
       </button>
     </div>
 
-    <!-- Stats -->
     <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
       <Card>
         <CardContent class="p-5">
@@ -77,32 +84,21 @@ const unreadCount = computed(() => notifications.value.filter(n => !n.lue).lengt
       </Card>
     </div>
 
-    <!-- Filtres -->
     <Card>
       <CardContent class="p-4">
         <div class="flex flex-wrap items-end gap-4">
-          <div class="space-y-1.5">
-            <label class="text-[12px] font-medium text-muted-foreground">Type</label>
-            <select v-model="typeFilter" class="h-9 rounded-lg border border-border bg-background px-3 text-sm">
-              <option value="">Tous</option>
-              <option value="info">Info</option>
-              <option value="success">Succes</option>
-              <option value="warning">Alerte</option>
-              <option value="error">Erreur</option>
-            </select>
-          </div>
-          <div class="flex items-center gap-2 h-9">
+          <AppSelectInput v-model="typeFilter" :options="typeOptions" label="Type" trigger-class="min-w-[140px]" />
+          <div class="flex items-center gap-2 h-10">
             <input id="unreadOnly" v-model="showUnreadOnly" type="checkbox" class="rounded border-border">
             <label for="unreadOnly" class="text-sm">Non lues uniquement</label>
           </div>
-          <div class="ml-auto text-[13px] text-muted-foreground">
+          <p class="ml-auto text-[13px] text-muted-foreground">
             {{ filteredNotifications.length }} notification(s)
-          </div>
+          </p>
         </div>
       </CardContent>
     </Card>
 
-    <!-- Liste -->
     <div class="space-y-2">
       <Card v-for="notif in filteredNotifications" :key="notif.id" :class="{ 'opacity-60': notif.lue }">
         <CardContent class="p-4">
