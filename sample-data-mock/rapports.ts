@@ -1,15 +1,4 @@
-export interface Rapport {
-  id: string
-  titre: string
-  description: string
-  dateGenere: string
-  periode: string
-  institution: string
-  nbTransactions: number
-  montantTotal: number
-  tauxReussite: number
-  type: string
-}
+import type { Rapport } from '~/types/tresor'
 
 export const mockRapports: Rapport[] = [
   { id: 'RAP-2026-001', titre: 'Rapport mensuel transactions', description: 'Synthese complete des transactions du mois d\'aout 2026', dateGenere: '19/08/2026', periode: 'Aout 2026', institution: 'Toutes', nbTransactions: 1247, montantTotal: 485000000, tauxReussite: 98.2, type: 'Mensuel' },

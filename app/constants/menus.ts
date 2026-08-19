@@ -3,22 +3,21 @@ import { DOC_SECTIONS } from './mock-data'
 
 export const backofficeMenu = [
   {
-    // heading: '',
     items: [
       { title: 'Vue d\'ensemble', icon: 'i-lucide-layout-dashboard', link: '/dashboard' },
-      { title: 'Transactions', icon: 'i-lucide-box', link: '/dashboard/transactions' },
-      { title: 'Demande de paiement', icon: 'i-lucide-key', link: '/dashboard/request-payment' },
-      { title: 'Paiement reçus', icon: 'i-lucide-key', link: '/dashboard/payment-received' },
-      { title: 'Paiement envoyés', icon: 'i-lucide-key', link: '/dashboard/payment-sent' },
-      { title: 'Services', icon: 'i-lucide-key', link: '/dashboard/services' },
-      { title: 'Utilisateurs', icon: 'i-lucide-key', link: '/dashboard/users' },
-      { title: 'Gestion des accès', icon: 'i-lucide-key', link: '/dashboard/access-management' },
-      { title: 'Alias', icon: 'i-lucide-key', link: '/dashboard/aliases' },
-      { title: 'Notification', icon: 'i-lucide-key', link: '/dashboard/notification' },
-      { title: 'Journal d\'activité', icon: 'i-lucide-scroll-text', link: '/dashboard/logs' },
-      { title: 'Structure', icon: 'i-lucide-key', link: '/dashboard/structure' },
+      { title: 'Transactions', icon: 'i-lucide-arrow-right-left', link: '/dashboard/transactions' },
+      { title: 'Demande de paiement', icon: 'i-lucide-file-text', link: '/dashboard/request-payment' },
+      { title: 'Paiement recus', icon: 'i-lucide-download', link: '/dashboard/payment-received' },
+      { title: 'Paiement envoyes', icon: 'i-lucide-upload', link: '/dashboard/payment-sent' },
+      { title: 'Services', icon: 'i-lucide-cpu', link: '/dashboard/services' },
+      { title: 'Utilisateurs', icon: 'i-lucide-users', link: '/dashboard/users' },
+      { title: 'Gestion des acces', icon: 'i-lucide-shield', link: '/dashboard/access-management' },
+      { title: 'Alias', icon: 'i-lucide-tag', link: '/dashboard/aliases' },
+      { title: 'Notification', icon: 'i-lucide-bell', link: '/dashboard/notification' },
+      { title: 'Journal d\'activite', icon: 'i-lucide-scroll-text', link: '/dashboard/logs' },
+      { title: 'Structure', icon: 'i-lucide-network', link: '/dashboard/structure' },
       {
-        title: 'Paramètres',
+        title: 'Parametres',
         icon: 'i-lucide-settings',
         link: '/dashboard/settings',
         children: [

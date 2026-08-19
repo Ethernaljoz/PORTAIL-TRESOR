@@ -1,0 +1,12 @@
+import type { Utilisateur } from '~/types/tresor'
+
+export const mockUtilisateurs: Utilisateur[] = [
+  { id: 'u-001', nom: 'Mensah', prenom: 'Koffi', email: 'k.mensah@tresor.tg', telephone: '+228 90 12 34 56', role: 'Administrateur', roleId: 'r-01', institution: 'Portail Trésor', institutionId: 'tresor', statut: 'Actif', derniereConnexion: '19/08/2026 08:30', dateCreation: '01/08/2026' },
+  { id: 'u-002', nom: 'Doe', prenom: 'Afi', email: 'a.doe@tresor.tg', telephone: '+228 91 23 45 67', role: 'Superviseur', roleId: 'r-02', institution: 'Portail Trésor', institutionId: 'tresor', statut: 'Actif', derniereConnexion: '19/08/2026 08:15', dateCreation: '01/08/2026' },
+  { id: 'u-003', nom: 'Kossi', prenom: 'Yawa', email: 'y.kossi@otr.tg', telephone: '+228 92 34 56 78', role: 'Gestionnaire', roleId: 'r-03', institution: 'Office Togolais des Recettes', institutionId: 'otr', statut: 'Actif', derniereConnexion: '19/08/2026 07:45', dateCreation: '03/08/2026' },
+  { id: 'u-004', nom: 'Agbo', prenom: 'Komlan', email: 'k.agbo@pal.tg', telephone: '+228 93 45 67 89', role: 'Gestionnaire', roleId: 'r-03', institution: 'Port Autonome de Lomé', institutionId: 'pal', statut: 'Actif', derniereConnexion: '18/08/2026 17:30', dateCreation: '05/08/2026' },
+  { id: 'u-005', nom: 'Folly', prenom: 'Dodji', email: 'd.folly@crt.tg', telephone: '+228 94 56 78 90', role: 'Opérateur', roleId: 'r-04', institution: 'Caisse de Retraites du Togo', institutionId: 'crt', statut: 'Actif', derniereConnexion: '18/08/2026 16:00', dateCreation: '06/08/2026' },
+  { id: 'u-006', nom: 'Sitsofi', prenom: 'Abra', email: 'a.sitsofi@dgt.tg', telephone: '+228 95 67 89 01', role: 'Opérateur', roleId: 'r-04', institution: 'Direction Générale des Douanes', institutionId: 'dgt', statut: 'Inactif', derniereConnexion: '10/08/2026 09:00', dateCreation: '08/08/2026' },
+  { id: 'u-007', nom: 'Akakpo', prenom: 'Koko', email: 'k.akakpo@tresor.tg', telephone: '+228 96 78 90 12', role: 'Lecteur', roleId: 'r-05', institution: 'Portail Trésor', institutionId: 'tresor', statut: 'Actif', derniereConnexion: '19/08/2026 08:00', dateCreation: '10/08/2026' },
+  { id: 'u-008', nom: 'Kpatar', prenom: 'Suru', email: 's.kpatar@mfp.tg', telephone: '+228 97 89 01 23', role: 'Gestionnaire', roleId: 'r-03', institution: 'Ministère de la Fonction Publique', institutionId: 'mfp', statut: 'En attente', derniereConnexion: '', dateCreation: '12/08/2026' },
+]

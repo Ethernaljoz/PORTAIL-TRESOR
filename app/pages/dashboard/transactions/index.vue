@@ -1,30 +1,39 @@
 <script setup lang="ts">
-definePageMeta({
-  requiresAuth: true,
+definePageMeta({ requiresAuth: true })
+
+const { transactions } = useMockData()
+
+const typeFilter = ref('')
+const statutFilter = ref('')
+
+const filteredTransactions = computed(() => {
+  return transactions.value.filter(tx => {
+    if (typeFilter.value && tx.type !== typeFilter.value) return false
+    if (statutFilter.value && tx.statut !== statutFilter.value) return false
+    return true
+  })
 })
 
-const { apiKeys } = useMockData()
-
-function statusColor(status: string): string {
-  const colors: Record<string, string> = {
-    active: 'text-emerald-600 bg-emerald-50 ring-emerald-200',
-    revoked: 'text-destructive bg-destructive/10 ring-destructive/20',
-    expired: 'text-muted-foreground bg-muted ring-border',
+function typeColor(type: string): string {
+  const map: Record<string, string> = {
+    'Recette': 'text-emerald-600 bg-emerald-50',
+    'Dépense': 'text-amber-600 bg-amber-50',
   }
-  return colors[status] || 'text-muted-foreground bg-muted'
+  return map[type] || 'text-muted-foreground bg-muted'
 }
 
-function statusLabel(status: string): string {
-  const labels: Record<string, string> = { active: 'Active', revoked: 'Révoquée', expired: 'Expirée' }
-  return labels[status] || status
+function statutColor(statut: string): string {
+  const map: Record<string, string> = {
+    'Réussi': 'text-emerald-600 bg-emerald-50 ring-emerald-200',
+    'En attente': 'text-amber-600 bg-amber-50 ring-amber-200',
+    'Échoué': 'text-destructive bg-destructive/10 ring-destructive/20',
+    'Annulé': 'text-muted-foreground bg-muted ring-border',
+  }
+  return map[statut] || 'text-muted-foreground bg-muted'
 }
 
-const showSecret = ref<Record<string, boolean>>({})
-const showConfirmRevoke = ref(false)
-const revokeTarget = ref<string | null>(null)
-
-function toggleSecret(keyId: string) {
-  showSecret.value[keyId] = !showSecret.value[keyId]
+function formatMontant(val: number): string {
+  return val.toLocaleString('fr-FR') + ' XOF'
 }
 </script>
 
@@ -32,83 +41,78 @@ function toggleSecret(keyId: string) {
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-xl font-semibold">Clés API</h1>
-        <p class="text-sm text-muted-foreground mt-1">Gérez vos clés d'accès à l'API</p>
+        <h1 class="text-xl font-semibold">Transactions</h1>
+        <p class="text-sm text-muted-foreground mt-1">Historique des transactions financières</p>
       </div>
-      <button class="h-9 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all inline-flex items-center gap-2">
-        <Icon name="i-lucide-plus" class="size-4" />
-        Générer une clé
-      </button>
     </div>
 
+    <!-- Filtres -->
     <Card>
-      <CardContent class="p-0">
-        <div class="divide-y divide-border">
-          <div v-for="key in apiKeys" :key="key.id" class="p-5 space-y-3">
-            <div class="flex items-start justify-between">
-              <div class="space-y-1">
-                <div class="flex items-center gap-2">
-                  <h3 class="font-semibold text-foreground">{{ key.name }}</h3>
-                  <span :class="['inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset', statusColor(key.status)]">
-                    {{ statusLabel(key.status) }}
-                  </span>
-                </div>
-                <p class="text-xs text-muted-foreground">Client ID: {{ key.clientId }}</p>
-              </div>
-              <div class="flex items-center gap-2">
-                <button
-                  class="h-8 px-3 rounded-lg border border-border text-xs font-medium hover:bg-accent transition-all"
-                  @click="toggleSecret(key.id)"
-                >
-                  {{ showSecret[key.id] ? 'Masquer' : 'Afficher' }} le secret
-                </button>
-                <button
-                  v-if="key.status === 'active'"
-                  class="h-8 px-3 rounded-lg border border-destructive/30 text-xs font-medium text-destructive hover:bg-destructive/10 transition-all"
-                  @click="revokeTarget = key.id; showConfirmRevoke = true"
-                >
-                  Révoquer
-                </button>
-              </div>
-            </div>
-            <div class="bg-muted rounded-lg p-3">
-              <div class="text-[10px] font-medium text-muted-foreground mb-1">Secret</div>
-              <code class="text-sm font-mono">
-                {{ showSecret[key.id] ? key.secret : '••••••••••••••••••••••••••••••••' }}
-              </code>
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <span
-                v-for="perm in key.permissions"
-                :key="perm"
-                class="inline-flex items-center rounded bg-primary/5 border border-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary"
-              >
-                {{ perm }}
-              </span>
-            </div>
-            <div class="flex items-center gap-4 text-xs text-muted-foreground">
-              <span>Créée le {{ key.createdAt }}</span>
-              <span>Expire le {{ key.expiresAt }}</span>
-              <span v-if="key.lastUsedAt">Dernière utilisation: {{ new Date(key.lastUsedAt).toLocaleDateString('fr-FR') }}</span>
-            </div>
+      <CardContent class="p-4">
+        <div class="flex flex-wrap items-end gap-4">
+          <div class="space-y-1.5">
+            <label class="text-[12px] font-medium text-muted-foreground">Type</label>
+            <select v-model="typeFilter" class="h-9 rounded-lg border border-border bg-background px-3 text-sm">
+              <option value="">Tous</option>
+              <option value="Recette">Recette</option>
+              <option value="Dépense">Dépense</option>
+            </select>
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-[12px] font-medium text-muted-foreground">Statut</label>
+            <select v-model="statutFilter" class="h-9 rounded-lg border border-border bg-background px-3 text-sm">
+              <option value="">Tous</option>
+              <option value="Réussi">Réussi</option>
+              <option value="En attente">En attente</option>
+              <option value="Échoué">Échoué</option>
+              <option value="Annulé">Annulé</option>
+            </select>
+          </div>
+          <div class="ml-auto text-[13px] text-muted-foreground">
+            {{ filteredTransactions.length }} résultat(s)
           </div>
         </div>
       </CardContent>
     </Card>
 
-    <AlertDialog v-model:open="showConfirmRevoke">
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Révoquer cette clé ?</AlertDialogTitle>
-          <AlertDialogDescription>
-            Cette action est irréversible. La clé ne pourra plus être utilisée pour authentifier les requêtes API.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel @click="revokeTarget = null">Annuler</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" @click="showConfirmRevoke = false">Révoquer</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <!-- Table -->
+    <Card>
+      <CardContent class="p-0">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border">
+                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">ID</th>
+                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Type</th>
+                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Description</th>
+                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Montant</th>
+                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Référence</th>
+                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Statut</th>
+                <th class="text-left py-3 px-4 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Date</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <tr v-for="tx in filteredTransactions" :key="tx.id" class="hover:bg-muted/50">
+                <td class="py-3 px-4 text-xs font-mono text-muted-foreground whitespace-nowrap">{{ tx.id }}</td>
+                <td class="py-3 px-4">
+                  <span :class="['inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold', typeColor(tx.type)]">
+                    {{ tx.type }}
+                  </span>
+                </td>
+                <td class="py-3 px-4 text-xs max-w-[200px] truncate">{{ tx.description }}</td>
+                <td class="py-3 px-4 text-xs font-semibold font-mono">{{ formatMontant(tx.montant) }}</td>
+                <td class="py-3 px-4 text-xs font-mono text-muted-foreground">{{ tx.reference }}</td>
+                <td class="py-3 px-4">
+                  <span :class="['inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 ring-inset', statutColor(tx.statut)]">
+                    {{ tx.statut }}
+                  </span>
+                </td>
+                <td class="py-3 px-4 text-xs text-muted-foreground whitespace-nowrap">{{ tx.dateInitiation }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </CardContent>
+    </Card>
   </div>
 </template>

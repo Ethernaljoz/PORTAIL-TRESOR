@@ -1,63 +1,80 @@
 <script setup lang="ts">
-definePageMeta({
-  requiresAuth: true,
-})
+definePageMeta({ requiresAuth: true })
 
-const { apps } = useMockData()
+const { enrolements } = useMockData()
 
-function statusColor(status: string): string {
-  const colors: Record<string, string> = {
-    active: 'text-emerald-600 bg-emerald-50 ring-emerald-200',
-    inactive: 'text-muted-foreground bg-muted ring-border',
-    pending: 'text-amber-600 bg-amber-50 ring-amber-200',
+function statutColor(statut: string): string {
+  const map: Record<string, string> = {
+    'Approuvé': 'text-emerald-600 bg-emerald-50 ring-emerald-200',
+    'En attente': 'text-amber-600 bg-amber-50 ring-amber-200',
+    'Rejeté': 'text-destructive bg-destructive/10 ring-destructive/20',
   }
-  return colors[status] || 'text-muted-foreground bg-muted'
+  return map[statut] || 'text-muted-foreground bg-muted'
 }
 
-function statusLabel(status: string): string {
-  const labels: Record<string, string> = { active: 'Active', inactive: 'Inactive', pending: 'En attente' }
-  return labels[status] || status
-}
+const approved = computed(() => enrolements.value.filter(e => e.statut === 'Approuvé').length)
+const pending = computed(() => enrolements.value.filter(e => e.statut === 'En attente').length)
 </script>
 
 <template>
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-xl font-semibold">Applications</h1>
-        <p class="text-sm text-muted-foreground mt-1">Gérez vos applications enregistrées</p>
+        <h1 class="text-xl font-semibold">Institutions</h1>
+        <p class="text-sm text-muted-foreground mt-1">Institutions enrôlées sur la plateforme</p>
       </div>
-      <button class="h-9 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all inline-flex items-center gap-2">
-        <Icon name="i-lucide-plus" class="size-4" />
-        Nouvelle application
-      </button>
     </div>
 
+    <!-- Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <Card>
+        <CardContent class="p-5">
+          <div class="text-[12px] text-muted-foreground font-medium">Total</div>
+          <div class="text-2xl font-bold mt-1">{{ enrolements.length }}</div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent class="p-5">
+          <div class="text-[12px] text-muted-foreground font-medium">Approuvées</div>
+          <div class="text-2xl font-bold mt-1 text-emerald-600">{{ approved }}</div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent class="p-5">
+          <div class="text-[12px] text-muted-foreground font-medium">En attente</div>
+          <div class="text-2xl font-bold mt-1 text-amber-600">{{ pending }}</div>
+        </CardContent>
+      </Card>
+    </div>
+
+    <!-- Liste -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <Card v-for="app in apps" :key="app.id" class="hover:shadow-md transition-all">
+      <Card v-for="inst in enrolements" :key="inst.id" class="hover:shadow-md transition-all">
         <CardContent class="p-5">
           <div class="flex items-start justify-between mb-3">
             <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Icon name="i-lucide-box" class="size-5 text-primary" />
+              <Icon name="i-lucide-building-2" class="size-5 text-primary" />
             </div>
-            <span :class="['inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset', statusColor(app.status)]">
-              {{ statusLabel(app.status) }}
+            <span :class="['inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset', statutColor(inst.statut)]">
+              {{ inst.statut }}
             </span>
           </div>
-          <h3 class="font-semibold text-foreground">{{ app.name }}</h3>
-          <p class="text-sm text-muted-foreground mt-1 line-clamp-2">{{ app.description }}</p>
+          <h3 class="font-semibold text-foreground">{{ inst.institution }}</h3>
+          <p class="text-xs text-muted-foreground mt-1">{{ inst.typeInstitution }}</p>
+          <p class="text-sm text-muted-foreground mt-2 line-clamp-2">{{ inst.motif }}</p>
           <div class="mt-4 pt-3 border-t border-border space-y-2">
             <div class="flex items-center justify-between text-xs">
-              <span class="text-muted-foreground">Environnement</span>
-              <span class="font-medium">{{ app.environment }}</span>
+              <span class="text-muted-foreground">Demandeur</span>
+              <span class="font-medium">{{ inst.demandeur }}</span>
             </div>
             <div class="flex items-center justify-between text-xs">
-              <span class="text-muted-foreground">Créée le</span>
-              <span class="font-medium">{{ app.createdAt }}</span>
+              <span class="text-muted-foreground">Services demandés</span>
+              <span class="font-medium">{{ inst.servicesDemandes }}</span>
             </div>
-          </div>
-          <div class="mt-3">
-            <code class="text-[11px] text-muted-foreground bg-muted px-2 py-1 rounded block truncate">{{ app.baseUrl }}</code>
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-muted-foreground">Date demande</span>
+              <span class="font-medium">{{ inst.dateDemande }}</span>
+            </div>
           </div>
         </CardContent>
       </Card>
